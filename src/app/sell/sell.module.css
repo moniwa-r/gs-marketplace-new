@@ -125,3 +125,113 @@
   font-size: 12px;
   font-weight: bold;
 }
+
+.fileTypeHint {
+  font-size: 14px;
+  color: #666;
+  margin-top: -5px;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+}
+
+.thumbnailUploadArea {
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.thumbnailUploadArea:hover {
+  border-color: #007bff;
+}
+
+.thumbnailPreviewContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.thumbnailPreviewItem {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeThumbnailButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.removeThumbnailButton:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.thumbnailProgressBarContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.thumbnailProgressBar {
+  height: 100%;
+  background-color: #28a745; /* Green for progress */
+  width: 0%;
+}
+
+.thumbnailProgressText {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  line-height: 5px;
+  color: white;
+  font-size: 8px;
+}

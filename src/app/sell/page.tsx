@@ -10,13 +10,16 @@ export default function SellPage() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [isFree, setIsFree] = useState(false);
   const [plyFile, setPlyFile] = useState<File | null>(null);
+  const [thumbnailFiles, setThumbnailFiles] = useState<File[]>([]); // サムネイルファイル
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [thumbnailUploadProgress, setThumbnailUploadProgress] = useState<number[]>([]); // 各サムネイルの進捗
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePlyFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.name.endsWith('.ply')) {
@@ -27,6 +30,23 @@ export default function SellPage() {
         setError('対応しているファイル形式は.plyのみです。');
       }
     }
+  }, []);
+
+  const handleThumbnailFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+    if (imageFiles.length + thumbnailFiles.length > 8) {
+      setError('サムネイルは8枚までアップロードできます。');
+      return;
+    }
+
+    setThumbnailFiles(prev => [...prev, ...imageFiles]);
+    setError(null);
+  }, [thumbnailFiles]);
+
+  const removeThumbnail = useCallback((index: number) => {
+    setThumbnailFiles(prev => prev.filter((_, i) => i !== index));
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -66,13 +86,21 @@ export default function SellPage() {
       return;
     }
 
-    let fileUrl = '';
-    const filePath = `${user.id}/${Date.now()}-${plyFile.name}`;
+    // 価格のバリデーション
+    const finalPrice = isFree ? 0 : parseFloat(price);
+    if (!isFree && (isNaN(finalPrice) || finalPrice <= 0)) {
+      setError('有効な価格を入力してください。');
+      setLoading(false);
+      return;
+    }
+
+    let modelFileUrl = '';
+    const modelFilePath = `${user.id}/${Date.now()}-${plyFile.name}`;
 
     try {
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('product-models')
-        .upload(filePath, plyFile, {
+        .upload(modelFilePath, plyFile, {
           cacheControl: '3600',
           upsert: false,
           onUploadProgress: (event) => {
@@ -86,17 +114,59 @@ export default function SellPage() {
         throw uploadError;
       }
 
-      // アップロードされたファイルの公開URLを取得
       const { data: publicUrlData } = supabase.storage
         .from('product-models')
-        .getPublicUrl(filePath);
+        .getPublicUrl(modelFilePath);
       
-      fileUrl = publicUrlData.publicUrl;
+      modelFileUrl = publicUrlData.publicUrl;
 
     } catch (uploadError: any) {
-      setError(`ファイルのアップロードに失敗しました: ${uploadError.message}`);
+      setError(`3Dモデルファイルのアップロードに失敗しました: ${uploadError.message}`);
       setLoading(false);
       return;
+    }
+
+    // サムネイル画像のアップロード
+    const uploadedThumbnailUrls: string[] = [];
+    if (thumbnailFiles.length > 0) {
+      setThumbnailUploadProgress(Array(thumbnailFiles.length).fill(0));
+      for (let i = 0; i < thumbnailFiles.length; i++) {
+        const thumbnailFile = thumbnailFiles[i];
+        const thumbnailFilePath = `${user.id}/thumbnails/${Date.now()}-${thumbnailFile.name}`;
+
+        try {
+          const { data: thumbnailUploadData, error: thumbnailUploadError } = await supabase.storage
+            .from('product-thumbnails')
+            .upload(thumbnailFilePath, thumbnailFile, {
+              cacheControl: '3600',
+              upsert: false,
+              onUploadProgress: (event) => {
+                if (event.total) {
+                  setThumbnailUploadProgress(prev => {
+                    const newProgress = [...prev];
+                    newProgress[i] = Math.round((event.loaded / event.total) * 100);
+                    return newProgress;
+                  });
+                }
+              },
+            });
+
+          if (thumbnailUploadError) {
+            throw thumbnailUploadError;
+          }
+
+          const { data: publicUrlData } = supabase.storage
+            .from('product-thumbnails')
+            .getPublicUrl(thumbnailFilePath);
+          
+          uploadedThumbnailUrls.push(publicUrlData.publicUrl);
+
+        } catch (thumbnailUploadError: any) {
+          setError(`サムネイル画像のアップロードに失敗しました: ${thumbnailUploadError.message}`);
+          setLoading(false);
+          return;
+        }
+      }
     }
 
     const { error: insertError } = await supabase
@@ -104,15 +174,16 @@ export default function SellPage() {
       .insert({
         name,
         description,
-        price: parseFloat(price),
-        sample_image_url: fileUrl, // アップロードされたファイルのURLを保存
+        price: finalPrice,
+        sample_image_url: modelFileUrl, // 3DモデルファイルのURLを保存
+        thumbnail_urls: uploadedThumbnailUrls, // サムネイル画像のURLを保存
         user_id: user.id,
       });
 
     if (insertError) {
       setError(insertError.message);
     } else {
-      router.push('/'); // 商品一覧ページへリダイレクト
+      router.push('/');
     }
     setLoading(false);
   };
@@ -124,7 +195,8 @@ export default function SellPage() {
         {error && <p className={sellStyles.errorMessage}>{error}</p>}
         
         <div className={sellStyles.formGroup}>
-          <label htmlFor="file-upload" className={sellStyles.label}>.plyファイル</label>
+          <label htmlFor="file-upload" className={sellStyles.label}>3Dモデルファイル</label>
+          <p className={sellStyles.fileTypeHint}>対応ファイル形式: .ply</p>
           <div 
             className={sellStyles.dropArea}
             onDrop={handleDrop}
@@ -139,7 +211,7 @@ export default function SellPage() {
               type="file"
               id="file-upload"
               accept=".ply"
-              onChange={handleFileChange}
+              onChange={handlePlyFileChange}
               className={sellStyles.fileInput}
             />
           </div>
@@ -149,6 +221,37 @@ export default function SellPage() {
               <span className={sellStyles.progressText}>{uploadProgress}%</span>
             </div>
           )}
+        </div>
+
+        {/* サムネイルアップロードセクション */}
+        <div className={sellStyles.formGroup}>
+          <label htmlFor="thumbnail-upload" className={sellStyles.label}>サムネイル画像</label>
+          <p className={sellStyles.fileTypeHint}>最大8枚までアップロード可能 (画像ファイルのみ)</p>
+          <div className={sellStyles.thumbnailUploadArea}>
+            <input
+              type="file"
+              id="thumbnail-upload"
+              accept="image/*"
+              multiple
+              onChange={handleThumbnailFileChange}
+              className={sellStyles.fileInput}
+            />
+            <p>クリックして画像を選択</p>
+          </div>
+          <div className={sellStyles.thumbnailPreviewContainer}>
+            {thumbnailFiles.map((file, index) => (
+              <div key={index} className={sellStyles.thumbnailPreviewItem}>
+                <img src={URL.createObjectURL(file)} alt={`Thumbnail ${index + 1}`} className={sellStyles.thumbnailImage} />
+                <button type="button" onClick={() => removeThumbnail(index)} className={sellStyles.removeThumbnailButton}>×</button>
+                {thumbnailUploadProgress[index] > 0 && thumbnailUploadProgress[index] < 100 && (
+                  <div className={sellStyles.thumbnailProgressBarContainer}>
+                    <div className={sellStyles.thumbnailProgressBar} style={{ width: `${thumbnailUploadProgress[index]}%` }}></div>
+                    <span className={sellStyles.thumbnailProgressText}>{thumbnailUploadProgress[index]}%</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className={sellStyles.formGroup}>
@@ -173,31 +276,36 @@ export default function SellPage() {
             required
           ></textarea>
         </div>
+
         <div className={sellStyles.formGroup}>
-          <label htmlFor="price" className={sellStyles.label}>価格 (¥)</label>
-          <input
-            type="number"
-            id="price"
-            className={sellStyles.input}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-            min="0"
-            step="0.01"
-          />
+          <div className={sellStyles.checkboxGroup}>
+            <input
+              type="checkbox"
+              id="isFree"
+              checked={isFree}
+              onChange={(e) => setIsFree(e.target.checked)}
+              className={sellStyles.checkbox}
+            />
+            <label htmlFor="isFree" className={sellStyles.checkboxLabel}>無料ダウンロード</label>
+          </div>
         </div>
-        {/* 画像URLの入力フィールドはファイルアップロードに置き換えられたため削除 */}
-        {/* <div className={sellStyles.formGroup}>
-          <label htmlFor="sampleImageUrl" className={sellStyles.label}>サンプル画像URL</label>
-          <input
-            type="url"
-            id="sampleImageUrl"
-            className={sellStyles.input}
-            value={sampleImageUrl}
-            onChange={(e) => setSampleImageUrl(e.target.value)}
-            required
-          />
-        </div> */}
+
+        {!isFree && (
+          <div className={sellStyles.formGroup}>
+            <label htmlFor="price" className={sellStyles.label}>価格 (¥)</label>
+            <input
+              type="number"
+              id="price"
+              className={sellStyles.input}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required={!isFree}
+              min="0"
+              step="0.01"
+            />
+          </div>
+        )}
+
         <button type="submit" className={`${commonStyles.primaryButton} ${sellStyles.submitButton}`} disabled={loading}>
           {loading ? '送信中...' : '商品を出品する'}
         </button>

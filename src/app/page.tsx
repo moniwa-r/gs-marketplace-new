@@ -12,6 +12,7 @@ interface Product {
   description: string;
   price: number;
   sample_image_url: string;
+  thumbnail_urls: string[]; // サムネイルURLの配列を追加
 }
 
 async function getProducts(searchTerm: string | null): Promise<Product[]> {
@@ -89,7 +90,9 @@ export default function Home() {
                 <div className={commonStyles.cardImageContainer}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={product.sample_image_url || 'https://placehold.jp/3d4070/ffffff/400x300.png?text=Sample'}
+                    src={product.thumbnail_urls && product.thumbnail_urls.length > 0 
+                      ? product.thumbnail_urls[0] 
+                      : product.sample_image_url || 'https://placehold.jp/3d4070/ffffff/400x300.png?text=Sample'}
                     alt={product.name}
                     className={commonStyles.cardImage}
                   />

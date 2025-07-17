@@ -1,1 +1,1 @@
-feat: Implement cart functionality and fix styling/build issues
+feat: Implement file upload for product selling and Japanese localization

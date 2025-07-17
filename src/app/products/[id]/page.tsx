@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import productDetailStyles from './productDetail.module.css';
 import commonStyles from '@/styles/common.module.css';
 import AddToCartButton from '@/components/AddToCartButton';
-import React from 'react';
+// import React from 'react'; // Reactのインポートを削除
 
 export const revalidate = 60; // ページの再検証時間を設定
 
@@ -13,10 +13,11 @@ interface Product {
   description: string;
   price: number;
   sample_image_url: string;
+  thumbnail_urls: string[]; // サムネイルURLの配列を追加
 }
 
 async function getProduct(id: string): Promise<Product | null> {
-  const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
+  const { data, error } = await supabase.from('products').select('*, thumbnail_urls').eq('id', id).single(); // thumbnail_urlsも取得
   if (error) {
     console.error('Error fetching product:', error);
     return null;
@@ -25,8 +26,8 @@ async function getProduct(id: string): Promise<Product | null> {
 }
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const resolvedParams = React.use(Promise.resolve(params));
-  const productId = resolvedParams.id;
+  // paramsを直接使用するように戻す
+  const productId = params.id;
 
   const product = await getProduct(productId);
 
@@ -41,11 +42,26 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
           <div className={productDetailStyles.imageContainer}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={product.sample_image_url || 'https://placehold.jp/3d4070/ffffff/600x400.png?text=Sample'}
+              src={product.thumbnail_urls && product.thumbnail_urls.length > 0 
+                ? product.thumbnail_urls[0] 
+                : product.sample_image_url || 'https://placehold.jp/3d4070/ffffff/600x400.png?text=Sample'} // サムネイルを優先
               alt={product.name}
               className={productDetailStyles.productImage}
             />
           </div>
+          {/* 他のサムネイルを表示するギャラリーなどをここに追加できます */}
+          {product.thumbnail_urls && product.thumbnail_urls.length > 1 && (
+            <div className={productDetailStyles.thumbnailGallery}>
+              {product.thumbnail_urls.map((url, index) => (
+                <img
+                  key={index}
+                  src={url}
+                  alt={`${product.name} thumbnail ${index + 1}`}
+                  className={productDetailStyles.thumbnailGalleryImage}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <div className={productDetailStyles.infoSection}>
           <div>

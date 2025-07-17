@@ -25,16 +25,17 @@
 .imageSection {
   width: 100%;
   display: flex;
-  justify-content: center; /* Center image */
+  flex-direction: column; /* ギャラリーのために縦並び */
+  justify-content: center;
   align-items: center;
-  background-color: #f8f8f8; /* Lighter background for image section */
+  background-color: #f8f8f8;
   border-radius: 8px;
-  padding: 20px; /* Padding around image */
+  padding: 20px;
 }
 
 @media (min-width: 768px) {
   .imageSection {
-    width: 60%; /* Wider image section */
+    width: 60%;
     padding: 30px;
   }
 }
@@ -42,10 +43,11 @@
 .imageContainer {
   position: relative;
   width: 100%;
-  max-width: 600px; /* Max width for image */
-  padding-top: 75%; /* Aspect ratio 4:3 */
+  max-width: 600px;
+  padding-top: 75%;
   border-radius: 8px;
   overflow: hidden;
+  margin-bottom: 20px; /* ギャラリーとの間隔 */
 }
 
 .productImage {
@@ -54,7 +56,30 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Use contain to show full image */
+  object-fit: contain;
+}
+
+.thumbnailGallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 600px; /* メイン画像と同じ幅 */
+}
+
+.thumbnailGalleryImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.thumbnailGalleryImage:hover {
+  transform: scale(1.05);
+  border-color: #007bff;
 }
 
 .infoSection {
@@ -66,12 +91,12 @@
 
 @media (min-width: 768px) {
   .infoSection {
-    width: 40%; /* Narrower info section */
+    width: 40%;
   }
 }
 
 .productTitle {
-  font-size: 42px; /* Larger title */
+  font-size: 42px;
   font-weight: 800;
   color: #333;
   margin-bottom: 16px;
@@ -79,19 +104,19 @@
 
 .productDescription {
   color: #666;
-  font-size: 16px; /* Slightly smaller description font */
+  font-size: 16px;
   line-height: 1.6;
   margin-bottom: 24px;
 }
 
 .priceSection {
   margin-top: 32px;
-  border-top: 1px solid #eee; /* Top border for price section */
+  border-top: 1px solid #eee;
   padding-top: 24px;
 }
 
 .productPrice {
-  font-size: 56px; /* Larger price */
+  font-size: 56px;
   font-weight: 700;
   color: #007bff;
   margin-bottom: 24px;
@@ -99,7 +124,7 @@
 
 .buyButton {
   width: 100%;
-  padding: 18px 0; /* Larger padding for button */
+  padding: 18px 0;
   font-size: 26px;
   border-radius: 6px;
 }
@@ -108,8 +133,8 @@
   margin-top: 15px;
   padding: 10px;
   border-radius: 5px;
-  background-color: #e9f7ef; /* Light green for success */
-  color: #28a745; /* Dark green for success */
+  background-color: #e9f7ef;
+  color: #28a745;
   text-align: center;
   font-size: 16px;
 }
