@@ -1,0 +1,115 @@
+.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 40px 20px;
+}
+
+.productDetailCard {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+  .productDetailCard {
+    flex-direction: row;
+    padding: 48px;
+  }
+}
+
+.imageSection {
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Center image */
+  align-items: center;
+  background-color: #f8f8f8; /* Lighter background for image section */
+  border-radius: 8px;
+  padding: 20px; /* Padding around image */
+}
+
+@media (min-width: 768px) {
+  .imageSection {
+    width: 60%; /* Wider image section */
+    padding: 30px;
+  }
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  max-width: 600px; /* Max width for image */
+  padding-top: 75%; /* Aspect ratio 4:3 */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.productImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Use contain to show full image */
+}
+
+.infoSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+  .infoSection {
+    width: 40%; /* Narrower info section */
+  }
+}
+
+.productTitle {
+  font-size: 42px; /* Larger title */
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.productDescription {
+  color: #666;
+  font-size: 16px; /* Slightly smaller description font */
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.priceSection {
+  margin-top: 32px;
+  border-top: 1px solid #eee; /* Top border for price section */
+  padding-top: 24px;
+}
+
+.productPrice {
+  font-size: 56px; /* Larger price */
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 24px;
+}
+
+.buyButton {
+  width: 100%;
+  padding: 18px 0; /* Larger padding for button */
+  font-size: 26px;
+  border-radius: 6px;
+}
+
+.message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #e9f7ef; /* Light green for success */
+  color: #28a745; /* Dark green for success */
+  text-align: center;
+  font-size: 16px;
+}

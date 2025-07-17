@@ -1,0 +1,46 @@
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.heading {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.profileCard {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.profileItem {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.profileItem:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.value {
+  font-size: 18px;
+  color: #333;
+  word-break: break-all;
+}

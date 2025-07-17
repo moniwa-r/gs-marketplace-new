@@ -1,0 +1,43 @@
+.body {
+  background-color: #f8f8f8; /* Light Gray */
+  color: #333; /* Dark Gray */
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.header {
+  background-color: #fff; /* White */
+  color: #333; /* Dark Gray */
+  padding: 16px 32px; /* Increased padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-bottom: 1px solid #eee; /* Light border */
+}
+
+.headerTitle {
+  font-size: 28px; /* Slightly smaller */
+  font-weight: 700; /* Bold */
+  letter-spacing: -0.025em;
+  color: #333; /* Dark Gray */
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.navLink {
+  font-size: 16px; /* Slightly smaller */
+  font-weight: 500;
+  color: #555; /* Medium Gray */
+  text-decoration: none; /* Remove underline */
+  transition: color 0.2s ease-in-out;
+}
+
+.navLink:hover {
+  color: #007bff; /* Blue accent */
+}

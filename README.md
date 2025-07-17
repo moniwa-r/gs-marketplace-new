@@ -34,3 +34,15 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Troubleshooting
+
+### RPC Call Issues (e.g., 400 Bad Request)
+
+When making RPC calls to Supabase, ensure the `Prefer` header is correctly set. If you encounter `400 Bad Request` errors, especially with messages like `query has no destination for result data`, check the following:
+
+1.  **DevTools Network Tab:** Open your browser's developer tools (F12) and go to the "Network" tab.
+2.  **Inspect RPC Request:** Find the `POST` request to `/rest/v1/rpc/your_function_name`.
+3.  **Check Request Headers:** In the "Headers" tab of the request, look for the `Prefer` header.
+4.  **Verify `Prefer` Header Value:** Ensure it does NOT contain `undefinedreturn=representation`.
+    *   If it does, it indicates that `.select()` was called with `undefined` or a non-string value. Always use `.select('*')` or omit `.select()` if no return value is needed.
