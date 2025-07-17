@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import productDetailStyles from './productDetail.module.css';
 import commonStyles from '@/styles/common.module.css';
 import AddToCartButton from '@/components/AddToCartButton';
+import React from 'react';
 
 export const revalidate = 60; // ページの再検証時間を設定
 
@@ -24,8 +25,7 @@ async function getProduct(id: string): Promise<Product | null> {
 }
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  // paramsをawaitで解決
-  const resolvedParams = await params;
+  const resolvedParams = React.use(Promise.resolve(params));
   const productId = resolvedParams.id;
 
   const product = await getProduct(productId);

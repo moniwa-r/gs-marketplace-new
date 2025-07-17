@@ -22,7 +22,7 @@ export default function LoginPage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="card w-full max-w-md p-8 space-y-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800">Welcome Back!</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800">おかえりなさい！</h1>
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
@@ -32,34 +32,34 @@ export default function LoginPage() {
           localization={{
             variables: {
               sign_in: {
-                email_label: 'Email address',
-                password_label: 'Password',
-                email_input_placeholder: 'Your email address',
-                password_input_placeholder: 'Your password',
-                button_label: 'Sign In',
-                social_provider_text: 'Or continue with',
-                link_text: 'Already have an account? Sign In',
+                email_label: 'メールアドレス',
+                password_label: 'パスワード',
+                email_input_placeholder: 'あなたのメールアドレス',
+                password_input_placeholder: 'あなたのパスワード',
+                button_label: 'ログイン',
+                social_provider_text: 'または以下で続行',
+                link_text: 'アカウントをお持ちですか？ ログイン',
               },
               sign_up: {
-                email_label: 'Email address',
-                password_label: 'Create a Password',
-                email_input_placeholder: 'Your email address',
-                password_input_placeholder: 'Your password',
-                button_label: 'Sign Up',
-                social_provider_text: 'Or continue with',
-                link_text: "Don't have an account? Sign Up",
+                email_label: 'メールアドレス',
+                password_label: 'パスワードを作成',
+                email_input_placeholder: 'あなたのメールアドレス',
+                password_input_placeholder: 'あなたのパスワード',
+                button_label: 'サインアップ',
+                social_provider_text: 'または以下で続行',
+                link_text: "アカウントをお持ちでないですか？ サインアップ",
               },
               forgotten_password: {
-                email_label: 'Email address',
-                password_label: 'Your Password',
-                email_input_placeholder: 'Your email address',
-                button_label: 'Send reset password instructions',
-                link_text: 'Forgot your password?',
+                email_label: 'メールアドレス',
+                password_label: 'あなたのパスワード',
+                email_input_placeholder: 'あなたのメールアドレス',
+                button_label: 'パスワードリセットの指示を送信',
+                link_text: 'パスワードをお忘れですか？',
               },
               update_password: {
-                password_label: 'New Password',
-                password_input_placeholder: 'Your new password',
-                button_label: 'Update Password',
+                password_label: '新しいパスワード',
+                password_input_placeholder: '新しいパスワード',
+                button_label: 'パスワードを更新',
               },
             },
           }}

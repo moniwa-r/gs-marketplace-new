@@ -6,8 +6,6 @@ import commonStyles from '@/styles/common.module.css';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-
-
 interface Product {
   id: string;
   name: string;
@@ -68,21 +66,21 @@ export default function Home() {
 
   return (
     <main className={commonStyles.container}>
-      <h1 className={commonStyles.heading1}>Explore 3DGS Models</h1>
+      <h1 className={commonStyles.heading1}>3DGSモデルを探す</h1>
       <form onSubmit={handleSearchSubmit} className={commonStyles.searchForm}>
         <input
           type="text"
-          placeholder="Search products..."
+          placeholder="商品を検索..."
           value={searchTerm}
           onChange={handleSearchChange}
           className={commonStyles.searchInput}
         />
-        <button type="submit" className={commonStyles.searchButton}>Search</button>
+        <button type="submit" className={commonStyles.searchButton}>検索</button>
       </form>
       {loading ? (
-        <p className={commonStyles.loadingMessage}>Loading products...</p>
+        <p className={commonStyles.loadingMessage}>商品を読み込み中...</p>
       ) : products.length === 0 ? (
-        <p className={commonStyles.noProductsMessage}>No products found.</p>
+        <p className={commonStyles.noProductsMessage}>商品が見つかりませんでした。</p>
       ) : (
         <div className={commonStyles.gridContainer}>
           {products.map((product) => (
@@ -102,7 +100,7 @@ export default function Home() {
                 </div>
                 <div className={commonStyles.cardFooter}>
                   <p className={commonStyles.cardPrice}>¥{product.price.toLocaleString()}</p>
-                  <button className={commonStyles.primaryButton}>View Details</button>
+                  <button className={commonStyles.primaryButton}>詳細を見る</button>
                 </div>
               </div>
             </Link>

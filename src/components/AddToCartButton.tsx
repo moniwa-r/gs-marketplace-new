@@ -20,62 +20,52 @@ export default function AddToCartButton({ productId }: AddToCartButtonProps) {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      setMessage('Please log in to add items to your cart.');
+      setMessage('カートに追加するにはログインしてください。');
       setAddingToCart(false);
       return;
     }
 
     try {
-      // .single() を削除し、配列として受け取る
-      const { data, error } = await supabase
-        .rpc('add_or_increment_cart_item', {
-          p_product_id: productId,
-          p_quantity_to_add: 1
-        })
-        .select('*');
-      
-      if (error) {
-        console.error('RPC Error:', error);
-        console.error('Error details:', error.details);
-        console.error('Error hint:', error.hint);
-        console.error('Error message:', error.message);
+      const res = await supabase.rpc('add_or_increment_cart_item', {
+        p_product_id: productId,
+        p_quantity_to_add: 1,
+      }).select('*');
 
-        let userMessage = 'Failed to add to cart.';
-        const errorCode = error.code;
+      if (res.error) {
+        console.error('RPC Error:', res.error);
+        console.error('Error details:', res.error.details);
+        console.error('Error hint:', res.error.hint);
+        console.error('Error message:', res.error.message);
+
+        let userMessage = 'カートへの追加に失敗しました。';
+        const errorCode = res.error.code;
 
         switch (errorCode) {
           case '23503': // Foreign Key Violation
-            userMessage = 'Product or user not found. Please try again later.';
+            userMessage = '商品またはユーザーが見つかりません。後でもう一度お試しください。';
             break;
           case '42501': // RLS Policy Violation
-            userMessage = 'You do not have permission to perform this action.';
+            userMessage = 'この操作を実行する権限がありません。';
             break;
           case '23505': // Unique Constraint Violation
-            userMessage = 'This item is already in your cart.';
+            userMessage = 'この商品はすでにカートに入っています。';
             break;
           default:
-            userMessage = `Failed to add to cart: ${error.message || JSON.stringify(error)}`;
+            userMessage = `カートへの追加に失敗しました: ${res.error.message || JSON.stringify(res.error)}`;
             break;
         }
         setMessage(userMessage);
-        return; // エラーの場合はここで処理を終了
-      }
-      
-      // data は配列なので、最初の要素を取得
-      const cartItem = data[0];
-      
-      if (cartItem) {
-        // 数量に応じてメッセージを出し分け
-        if (cartItem.quantity === 1) {
-          setMessage('Product added to cart!');
+        return; 
+      } else {
+        if (res.data && res.data.length > 0 && res.data[0].quantity > 1) {
+          setMessage('カート内の商品の数量を更新しました！');
         } else {
-          setMessage(`Product quantity updated in cart! (${cartItem.quantity})`);
+          setMessage('商品をカートに追加しました！');
         }
       }
-      
-    } catch (err: any) {
-      console.error('Caught error:', err);
-      setMessage('Failed to add item to cart');
+    } catch (error: any) {
+      console.error('Caught error:', error);
+      setMessage('カートへの追加に失敗しました');
     } finally {
       setAddingToCart(false);
     }
@@ -88,7 +78,7 @@ export default function AddToCartButton({ productId }: AddToCartButtonProps) {
         className={`${commonStyles.primaryButton} ${productDetailStyles.buyButton}`}
         disabled={addingToCart}
       >
-        {addingToCart ? 'Adding...' : 'Add to Cart'}
+        {addingToCart ? '追加中...' : 'カートに追加'}
       </button>
       {message && <p className={productDetailStyles.message}>{message}</p>}
     </>

@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import type { Session } from '@supabase/supabase-js';
 import Link from 'next/link';
-import commonStyles from '@/styles/common.module.css'; // common.module.cssをインポート
+import commonStyles from '@/styles/common.module.css';
 
 export default function AuthButton() {
   const [session, setSession] = useState<Session | null>(null);
@@ -30,19 +30,18 @@ export default function AuthButton() {
 
   return session ? (
     <div className="flex items-center space-x-4">
-      <span className="text-gray-300 text-lg">Hello, {session.user?.email}</span>
+      <span className="text-gray-300 text-lg">こんにちは、{session.user?.email}</span>
       <button
         onClick={handleLogout}
-        className={commonStyles.secondaryButton} // commonStylesのクラスを適用
+        className={commonStyles.secondaryButton}
       >
-        Logout
+        ログアウト
       </button>
     </div>
   ) : (
     <Link href="/login">
-      <button className={commonStyles.primaryButton} // commonStylesのクラスを適用
-      >
-        Login
+      <button className={commonStyles.primaryButton}>
+        ログイン
       </button>
     </Link>
   );

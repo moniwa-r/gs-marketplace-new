@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const roboto_mono = Roboto_Mono({ subsets: ["latin"], variable: '--font-roboto-mono' });
 
 export const metadata: Metadata = {
-  title: "3DGS Marketplace",
-  description: "A marketplace for 3D Gaussian Splatting data.",
+  title: "3DGSマーケットプレイス",
+  description: "3Dガウススプラッティングデータのマーケットプレイスです。",
 };
 
 export default function RootLayout({
@@ -19,21 +19,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${roboto_mono.variable}`}>
+    <html lang="ja" className={`${inter.variable} ${roboto_mono.variable}`}>
       <body className={layoutStyles.body}>
         <header className={layoutStyles.header}>
           <Link href="/" className={layoutStyles.headerTitle}>
-            3DGS Marketplace
+            3DGSマーケットプレイス
           </Link>
           <nav className={layoutStyles.nav}>
             <Link href="/sell" className={layoutStyles.navLink}>
-              Sell
+              出品
             </Link>
             <Link href="/profile" className={layoutStyles.navLink}>
-              Profile
+              プロフィール
             </Link>
-            <Link href="/cart" className={layoutStyles.navLink}> {/* カートへのリンクを追加 */}
-              🛒 Cart
+            <Link href="/cart" className={layoutStyles.navLink}>
+              🛒 カート
             </Link>
             <AuthButton />
           </nav>

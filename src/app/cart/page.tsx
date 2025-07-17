@@ -29,7 +29,7 @@ export default function CartPage() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        setError('Please log in to view your cart.');
+        setError('カートを見るにはログインしてください。');
         setLoading(false);
         return;
       }
@@ -50,7 +50,7 @@ export default function CartPage() {
 
       if (error) {
         console.error('Error fetching cart items:', error);
-        setError(`Failed to load cart: ${error.message}`);
+        setError(`カートの読み込みに失敗しました: ${error.message}`);
       } else {
         setCartItems(data as CartItem[]);
       }
@@ -68,7 +68,7 @@ export default function CartPage() {
   };
 
   if (loading) {
-    return <div className={commonStyles.container}><p className={commonStyles.loadingMessage}>Loading cart...</p></div>;
+    return <div className={commonStyles.container}><p className={commonStyles.loadingMessage}>カートを読み込み中...</p></div>;
   }
 
   if (error) {
@@ -77,9 +77,9 @@ export default function CartPage() {
 
   return (
     <main className={commonStyles.container}>
-      <h1 className={cartStyles.heading}>Your Shopping Cart</h1>
+      <h1 className={cartStyles.heading}>あなたのショッピングカート</h1>
       {cartItems.length === 0 ? (
-        <p className={cartStyles.emptyCartMessage}>Your cart is empty. <Link href="/">Start shopping!</Link></p>
+        <p className={cartStyles.emptyCartMessage}>カートは空です。<Link href="/">買い物を始める！</Link></p>
       ) : (
         <div className={cartStyles.cartContent}>
           <div className={cartStyles.cartItemsList}>
@@ -105,24 +105,24 @@ export default function CartPage() {
                 <div className={cartStyles.itemSubtotal}>
                   ¥{((item.products?.price || 0) * item.quantity).toLocaleString()}
                 </div>
-                <button className={cartStyles.removeButton}>Remove</button>
+                <button className={cartStyles.removeButton}>削除</button>
               </div>
             ))}
           </div>
           <div className={cartStyles.cartSummary}>
             <div className={cartStyles.summaryRow}>
-              <span>Subtotal:</span>
+              <span>小計:</span>
               <span>¥{calculateTotal().toLocaleString()}</span>
             </div>
             <div className={cartStyles.summaryRow}>
-              <span>Shipping:</span>
-              <span>Free</span>
+              <span>送料:</span>
+              <span>無料</span>
             </div>
             <div className={`${cartStyles.summaryRow} ${cartStyles.totalRow}`}>
-              <span>Total:</span>
+              <span>合計:</span>
               <span>¥{calculateTotal().toLocaleString()}</span>
             </div>
-            <button className={`${commonStyles.primaryButton} ${cartStyles.checkoutButton}`}>Proceed to Checkout</button>
+            <button className={`${commonStyles.primaryButton} ${cartStyles.checkoutButton}`}>レジに進む</button>
           </div>
         </div>
       )}

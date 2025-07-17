@@ -25,7 +25,7 @@ export default function ProfilePage() {
   }, [router]);
 
   if (loading) {
-    return <div className={commonStyles.container}><p className={commonStyles.loadingMessage}>Loading profile...</p></div>;
+    return <div className={commonStyles.container}><p className={commonStyles.loadingMessage}>プロフィールを読み込み中...</p></div>;
   }
 
   if (!user) {
@@ -34,15 +34,15 @@ export default function ProfilePage() {
 
   return (
     <main className={profileStyles.container}>
-      <h1 className={profileStyles.heading}>Your Profile</h1>
+      <h1 className={profileStyles.heading}>あなたのプロフィール</h1>
       <div className={profileStyles.profileCard}>
         <div className={profileStyles.profileItem}>
-          <span className={profileStyles.label}>Email:</span>
+          <span className={profileStyles.label}>メールアドレス:</span>
           <span className={profileStyles.value}>{user.email}</span>
         </div>
         {/* 他のユーザー情報もここに追加できます */}
         <div className={profileStyles.profileItem}>
-          <span className={profileStyles.label}>User ID:</span>
+          <span className={profileStyles.label}>ユーザーID:</span>
           <span className={profileStyles.value}>{user.id}</span>
         </div>
       </div>
